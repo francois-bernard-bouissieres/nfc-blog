@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">IO 2014, NFC example 1</string>
+    <string name="explain">NFC foreground thread is now active. Touch the NFC badge with the back of your phone.
+    The counter should go up on each touch.</string>
+    <string name="verify">Use NFC TagInfo to verify the content. Look at page 0x26.</string>
+    <string name="action_settings">Settings</string>
+    <string name="placeholder_zero">0</string>
+
+</resources>
