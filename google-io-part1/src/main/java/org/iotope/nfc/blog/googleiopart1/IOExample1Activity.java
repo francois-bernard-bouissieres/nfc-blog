@@ -22,7 +22,6 @@ public class IOExample1Activity extends Activity {
 
     private PendingIntent mPendingIntent;
     private IntentFilter[] mFilters;
-    private String[][] mTechLists;
 
     private TextView counter;
     private int result;
@@ -31,22 +30,8 @@ public class IOExample1Activity extends Activity {
     private void setupNfcFilters() {
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-        IntentFilter tech = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-
-        //
         IntentFilter tag = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-
-        // Setup an intent filter for all MIME based dispatches
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        try {
-            ndef.addDataType("*/*");
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
-        }
-        mFilters = new IntentFilter[]{ndef, tag, tech};
-
-        // Setup a tech list for all NfcF tags
-        mTechLists = new String[][]{new String[]{NfcF.class.getName()}};
+        mFilters = new IntentFilter[]{tag};
     }
 
     @Override
@@ -66,7 +51,7 @@ public class IOExample1Activity extends Activity {
     public void onResume() {
         super.onResume();
         if (nfcAdapter != null)
-            nfcAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
+            nfcAdapter.enableForegroundDispatch(this, mPendingIntent, mFilters, null);
     }
 
     @Override
