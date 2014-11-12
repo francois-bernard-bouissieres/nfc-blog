@@ -24,9 +24,8 @@ public class IOExample1Activity extends Activity {
     private PendingIntent mPendingIntent;
     private IntentFilter[] mFilters;
 
-    private TextView counter;
-    private CheckBox resetCheckBox;
-    private int result;
+    private static final byte[] EATA = new byte[]{0x45, 0x41, 0x54, 0x41};
+    private static final byte[] GAIN = new byte[]{0x47, 0x41, 0x49, 0x4E};
 
 
     private void setupNfcFilters() {
@@ -43,10 +42,6 @@ public class IOExample1Activity extends Activity {
 
         nfcManager = (NfcManager) getSystemService(NFC_SERVICE);
         nfcAdapter = nfcManager.getDefaultAdapter();
-
-        counter = (TextView) findViewById(R.id.txt_counter);
-        resetCheckBox = (CheckBox) findViewById(R.id.reset);
-
         setupNfcFilters();
     }
 
@@ -74,32 +69,15 @@ public class IOExample1Activity extends Activity {
         MifareUltralight ultraC = MifareUltralight.get(tag);
         try {
             ultraC.connect();
-            if (resetCheckBox.isChecked()) {
-                result = 0;
-                ultraC.writePage(0x26, new byte[4]);
-            } else {
-                byte[] buffer = ultraC.readPages(0x26);
-                ultraC.writePage(0x26, plusOne(buffer));
-            }
+            // don't remember about day one and two... so only day 3 and 4
+            ultraC.writePage(0x24, EATA);
+            ultraC.writePage(0x25, GAIN);
             ultraC.close();
-
-            counter.setText(String.valueOf(result));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private byte[] plusOne(byte[] in) {
-        ByteBuffer buffer = ByteBuffer.wrap(in);
-        result = buffer.getInt() + 1;
-        buffer.rewind();
-        buffer.putInt(result);
 
-        byte[] write = new byte[4];
-        buffer.rewind();
-        buffer.get(write);
-
-        return write;
-    }
 }
