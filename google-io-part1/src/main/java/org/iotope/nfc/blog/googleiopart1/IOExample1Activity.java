@@ -9,6 +9,7 @@ import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class IOExample1Activity extends Activity {
     private IntentFilter[] mFilters;
 
     private TextView counter;
+    private CheckBox resetCheckBox;
     private int result;
 
 
@@ -43,6 +45,7 @@ public class IOExample1Activity extends Activity {
         nfcAdapter = nfcManager.getDefaultAdapter();
 
         counter = (TextView) findViewById(R.id.txt_counter);
+        resetCheckBox = (CheckBox) findViewById(R.id.reset);
 
         setupNfcFilters();
     }
@@ -71,8 +74,13 @@ public class IOExample1Activity extends Activity {
         MifareUltralight ultraC = MifareUltralight.get(tag);
         try {
             ultraC.connect();
-            byte[] buffer = ultraC.readPages(0x26);
-            ultraC.writePage(0x26, plusOne(buffer));
+            if (resetCheckBox.isChecked()) {
+                result = 0;
+                ultraC.writePage(0x26, new byte[4]);
+            } else {
+                byte[] buffer = ultraC.readPages(0x26);
+                ultraC.writePage(0x26, plusOne(buffer));
+            }
             ultraC.close();
 
             counter.setText(String.valueOf(result));
